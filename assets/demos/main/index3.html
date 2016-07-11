@@ -1,0 +1,974 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Diabetes beta</title>
+        <link rel="stylesheet" href="../../themes/css/apple.min.css" data-jqt-theme>
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <!-- Either, (1) Zepto:  Un-comment these 2 lines (order matters)  -->
+        <script src="../../lib/zepto/zepto.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../src/jqt.min.js" type="text/javascript" charset="utf-8"></script>
+        
+        <!-- Or,     (2) jQuery: Un-comment these 3 lines (order matters)  -->
+        <!-- <script src="../../lib/jquery/jquery-1.7.min.js" type="application/x-javascript" charset="utf-8"></script> -->
+        <!-- <script src="../../src/jqt.min.js" type="text/javascript" charset="utf-8"></script> -->
+        <!-- <script src="../../src/jqtouch-jquery.min.js" type="application/x-javascript" charset="utf-8"></script> -->
+
+        <script src="../../extensions/jqt.themeswitcher.min.js" type="application/x-javascript" charset="utf-8"></script>
+        <script src="../../extensions/jqt.actionsheet.min.js" type="application/x-javascript" charset="utf-8"></script>
+        <script src="../../extensions/jqt.menusheet.min.js" type="application/x-javascript" charset="utf-8"></script>
+
+        <script type="text/javascript" charset="utf-8">
+            var jQT = new $.jQT({
+                icon: 'jqtouch.png',
+                icon4: 'jqtouch4.png',
+                addGlossToIcon: false,
+                startupScreen: 'jqt_startup.png',
+                statusBar: 'black-translucent',
+                preloadImages: []
+            });
+
+            // Some sample Javascript functions:
+            $(function(){
+
+                // Show a swipe event on swipe test
+                $('#swipeme').swipe(function(evt, data) {
+                    var details = !data ? '': '<strong>' + data.direction + '/' + data.deltaX +':' + data.deltaY + '</strong>!';
+                    $(this).html('You swiped ' + details );
+                    $(this).parent().after('<li>swiped!</li>')
+                });
+
+                $('#tapme').tap(function(){
+                    $(this).parent().after('<li>tapped!</li>')
+                });
+
+                //$('a[target="_blank"]').bind('click', function() {
+                    //if (confirm('This link opens in a new window.')) {
+                        //return true;
+                    //} else {
+                        //return false;
+                    //}
+                //});
+
+                // Page animation callback events
+                $('#pageevents').
+                    bind('pageAnimationStart', function(e, info){ 
+                        $(this).find('.info').append('Started animating ' + info.direction + '&hellip;  And the link ' +
+                            'had this custom data: ' + $(this).data('referrer').data('custom') + '<br>');
+                    }).
+                    bind('pageAnimationEnd', function(e, info){
+                        $(this).find('.info').append('Finished animating ' + info.direction + '.<br><br>');
+
+                    });
+                
+                // Page animations end with AJAX callback event, example 1 (load remote HTML only first time)
+                $('#callback').bind('pageAnimationEnd', function(e, info){
+
+                    // Make sure the data hasn't already been loaded (we'll set 'loaded' to true a couple lines further down)
+                    if (!$(this).data('loaded')) {
+                        
+                        // Append a placeholder in case the remote HTML takes its sweet time making it back
+                        // Then, overwrite the "Loading" placeholder text with the remote HTML
+                        $(this).append($('<div>Loading</div>').load('ajax.html .info', function() {        
+                            // Set the 'loaded' var to true so we know not to reload
+                            // the HTML next time the #callback div animation ends
+                            $(this).parent().data('loaded', true);  
+                        }));
+                    }
+                });
+                // Orientation callback event
+                $('#jqt').bind('turn', function(e, data){
+                    $('#orient').html('Orientation: ' + data.orientation);
+                });
+                
+            });
+        </script>
+        <style type="text/css" media="screen">
+            #jqt.fullscreen #home .info {
+                display: none;
+            }
+            div#jqt #about {
+                padding: 100px 10px 40px;
+                text-shadow: rgba(0, 0, 0, 0.3) 0px -1px 0;
+                color: #999;
+                font-size: 13px;
+                text-align: center;
+                background: #161618;
+            }
+            div#jqt #about p {
+                margin-bottom: 8px;
+            }
+            div#jqt #about a {
+                color: #fff;
+                font-weight: bold;
+                text-decoration: none;
+            }
+			.contentDetail{
+				color: #000000;
+				font-size:14px;
+				padding-left:5px;
+				padding-right:5px;
+				padding-top:10px;
+				margin:5 5 5 5;
+				line-height:23px;
+			}
+        </style>
+    </head>
+    <body>
+        <div id="jqt" class="">
+            <div id="about" class="selectable">
+                <p><img src="jqtouch.png" /></p>
+                <p><strong>Numerology fortune telling</strong><br>Version 1.0 beta<br>
+                    <a >By Nguyen Huy</a></p>
+                <p><em>predicting information about a person's life<br> hope you soon stronger and better.</em></p>
+                <p style="padding-left:5px;padding-right:25px;">
+					I have self cured of diabetes, from 11.2 HbA1c(<a href="https://goo.gl/SkxP2l" target="_blank">link</a>) and 8.2 glucose index(<a href="https://goo.gl/YRLKBt" target="_blank">link</a>), one week after right eating and right exercise, decrease to 6.5(<a href="https://goo.gl/7bszL6" target="_blank">link</a>), after one month, now i only have 5.7(<a href="https://goo.gl/uDlbNT" target="_blank">link</a>)
+                    <br><a target="_blank" href="mailto:ujjotavn@gmail.com">ujjotavn@gmail.com</a>
+                </p>
+                <p><br><br><a href="#" class="grayButton goback">Close</a></p>
+            </div>
+            <div id="ajax">
+                <div class="toolbar">
+                    <h1>Rule 3.</h1>
+                    <a class="back" href="#">Back</a>
+                </div>
+                <div class="scroll">
+                    <h2>You must do follow the rule 3:</h2>
+                    <p class=contentDetail>
+						<b>Evening eat very little, or skip dinner.</b><br>
+						IF YOU CAN, ONLY HAVE BREAKFAST AND LUNCH, <b>SKIP DINNER</b>, DO NOT EAT ANYTHING AFTER 13h PM IS BEST FOR YOUR HEALTH! <br>
+						The first few days are not familiar, you may be very hungry, but then you feel comfortable. If you can not skip dinner, please eat alitle, very litle, only oat or a sweet potato.
+					</p>
+                </div>
+            </div>
+            <div id="animations">
+                <div class="toolbar">
+                    <h1>Rule 2.</h1>
+                    <a class="back" href="#">Back</a>                    
+                </div>
+                <div class="scroll">
+					<h2>You must do follow the rule 2:</h2>
+                    <p class=contentDetail>
+						<b>Walking at least 6 days per week, and at least 1 mile to 1.5 miles per day.</b><br>
+						Walk 30 minutes continuously every day, in the afternoon beetween 17h and 21h range, after have dinner(if have)
+walking is best excercise for both body and mind.
+						<br><b>Some benefit of walking:</b><br>
+						improves circulation, shores up your bones, leads to a longer life, lightens mood, improves sleep, supports your joints, slows mental decline, helps you do more, longer
+and most importance is: <b>it make your output(exercise) greater than input(eating)</b>
+					</p>
+                </div>
+            </div>
+            <div id="animdemo">
+                <div class="scroll">
+                    <div style="font-size: 1.5em; text-align: center; margin: 160px 0 90px; font-family: Marker felt;">
+                        Pretty smooth, eh?
+                    </div>
+                    <a style="margin-bottom: 120px;color:rgba(0,0,0,.9)" href="#" class="whiteButton goback">Go back</a>
+                </div>
+            </div>
+            <div id="buttons">
+                <div class="toolbar">
+                    <h1>Buttons!</h1>
+                    <a href="#" class="back">Home</a>
+                </div>
+                <div style="margin-top: 10px;" class="scroll">
+                    <a href="#" class="whiteButton">White</a>
+                    <br>
+                    <a href="#" class="grayButton">Gray</a>
+                    <br>
+                    <a href="#" class="redButton">Red</a>
+                    <br>
+                    <a href="#" class="greenButton">Green</a>
+                    <br>
+                    <a href="#" class="blueButton">Blue</a>
+                </div>
+            </div>
+            <div id="callback">
+                <div class="toolbar">
+                    <h1>AJAX w/Callback</h1>
+                    <a class="back" href="#">Ajax</a>
+                </div>
+            </div>
+            <div id="callbacks">
+                <div class="toolbar">
+                    <h1>Rule 4.</h1>
+                    <a class="back" href="#">Back</a>
+                </div>
+                <div class="scroll">
+                    <h2>You must do follow the rule 4:</h2>
+                    <p class=contentDetail>
+						<b>Meditation, relaxation, avoid thinking evening(<a href="http://www.buddhanet.net/m_part1.htm" target="_blank">basic practice</a>)</b><br><br>
+						<b>On a physical level, meditation:</b><br>
+							Lowers high blood pressure<br>
+							Lowers the levels of blood lactate, reducing anxiety attacks<br>
+							Decreases any tension-related pain, such as, tension headaches, ulcers, insomnia, muscle and joint problems<br>
+							Increases serotonin production that improves mood and behavior<br>
+							Improves the immune system<br>
+							Increases the energy level, as you gain an inner source of energy<br><br>
+							
+						<b>Mental Benefits of Meditation</b><br>
+
+							Meditation brings the brainwave pattern into an Alpha state that promotes healing. The mind becomes fresh, delicate and beautiful. With regular practice of meditation:<br>
+
+							Anxiety decreases<br>
+							Emotional stability improves<br>
+							Creativity increases<br>
+							Happiness increases<br>
+							Intuition develops<br>
+							Gain clarity and peace of mind<br>
+							Problems become smaller<br>
+							Meditation sharpens the mind by gaining focus and expands through relaxation<br>
+							A sharp mind without expansion causes tension, anger and frustration<br>
+							An expanded consciousness without sharpness can lead to lack of action/progress<br>
+							The balance of a sharp mind and an expanded consciousness brings perfection<br>
+							(artofliving.org)
+					</p>
+                </div>
+            </div>
+            <div id="demos">
+                <div class="toolbar">
+                    <h1>Demos</h1>
+                    <a class="back" href="#home">Home</a>
+                </div>
+                <div class="scroll">
+                    <ul class="rounded">
+                        <li class="forward"><a target="_blank" href="../todo/index.html">To-Do app</a></li>
+                        <li class="forward"><a target="_blank" href="../clock/index.html">Clock app</a></li>
+                    </ul>
+                </div>
+                <div class="info">
+                     These apps open in a new window. Don&#8217;t forget to save them to your home screen to enable full-screen mode.
+                 </div>
+            </div>
+            <div id="edge">
+                <div class="toolbar">
+                    <h1>Edge to Edge</h1>
+                    <a href="#" class="back">Back</a>
+                </div>
+                <ul class="edgetoedge scroll">
+                    <li class="sep">F</li>
+                    <li><a href="#">Flintstone, <em>Fred</em> <small>Label</small></a></li>
+                    <li><a href="#">Flintstone, <em>Pebble</em> <small class="counter">42</small></a></li>
+                    <li><a href="#">Flintstone, <em>Wilma</em></a></li>
+                    <li class="sep">J</li>
+                    <li class="arrow"><a href="#">Jetson, <em>Elroy</em> <small>Label</small></a></li>
+                    <li class="arrow"><a href="#">Jetson, <em>George</em> <small class="counter">42</small></a></li>
+                    <li class="arrow"><a href="#">Jetson, <em>Jane</em></a></li>
+                    <li class="arrow"><a href="#">Jetson, <em>Judy</em></a></li>
+                    <li class="sep">R</li>
+                    <li class="forward"><a href="#">Rubble, <em>Bambam</em> <small>Label</small></a></li>
+                    <li class="forward"><a href="#">Rubble, <em>Barney</em> <small class="counter">42</small></a></li>
+                    <li class="forward"><a href="#">Rubble, <em>Betty</em></a></li>
+                </ul>
+            </div>
+            <div id="themes">
+                <div class="toolbar">
+                    <h1>Themes</h1>
+                    
+                    <a href="#" class="back">Back</a>
+                </div>
+                <ul class="rounded">
+                    <li><a data-stylesheet-title="jqtouch" data-switch-stylesheet="../../themes/css/jqtouch.min.css" class="selected" href="#">jQTouch</a></li>
+                    <li><a data-stylesheet-title="innsbruck" data-switch-stylesheet="../../themes/css/innsbruck.min.css" href="#">iOS 7</a></li>
+                    <li><a data-stylesheet-title="vanilla" data-switch-stylesheet="../../themes/css/vanilla.min.css" href="#">Vanilla</a></li>
+                    <li><a data-stylesheet-title="apple" data-switch-stylesheet="../../themes/css/apple.min.css" href="#">Apple</a></li>
+                </ul>
+            </div>
+            <div id="extensions">
+                <div class="toolbar">
+                    <h1>Extensions</h1>
+                    <a class="back" href="#home">Home</a>
+                </div>
+                <div class="scroll">
+                    <div class="info">
+                        These apps open in a new window. Don&#8217;t forget to save them to your home screen to enable full-screen mode.
+                    </div>
+                    <ul class="rounded">
+                        <li class="forward"><a target="_blank" href="../ext_location/index.html">Geo Location</a></li>
+                        <li class="forward"><a target="_blank" href="../ext_offline/index.html">Offline Utility</a></li>
+                        <li class="forward"><a target="_blank" href="../ext_floaty/index.html">Floaty Bar</a></li>
+                        <li class="forward"><a target="_blank" href="../ext_autotitles/index.html">Auto Titles</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="home" class="current">
+                <div class="toolbar">
+                    <h1>Numerology</h1>					
+                    <a class="button slideup" id="infoButton" href="#about">About</a>
+                </div>
+                <div class="scroll">
+                    <form class="scroll">
+                    <ul class="edit rounded">
+						<h1 style="text-align:center;">To find out what your numbers say about you and your life, fill out the form below.</h1>	
+						<h1 style="text-align:center;color:black;">Your name</h1>	
+                        <li><input type="text" name="fname" placeholder="First Name" id="fname" /></li>
+                        <li><input type="text" name="mname" placeholder="Middle Name" id="mname" /></li>
+                        <li><input type="text" name="lname" placeholder="Last Name" id="lname" /></li>
+						<h1 style="text-align:center;color:black;">Date of birth</h1>	
+                        <li> <select name="day" id="day">
+                                  <option value="">Day</option>
+								  <option value="01">01</option>
+								  <option value="02">02</option>
+								  <option value="03">03</option>
+								  <option value="04">04</option>
+								  <option value="05">05</option>
+								  <option value="06">06</option>
+								  <option value="07">07</option>
+								  <option value="08">08</option>
+								  <option value="09">09</option>
+								  <option value="10">10</option>
+								  <option value="11">11</option>
+								  <option value="12">12</option>
+								  <option value="13">13</option>
+								  <option value="14">14</option>
+								  <option value="15">15</option>
+								  <option value="16">16</option>
+								  <option value="17">17</option>
+								  <option value="18">18</option>
+								  <option value="19">19</option>
+								  <option value="20">20</option>
+								  <option value="21">21</option>
+								  <option value="22">22</option>
+								  <option value="23">23</option>
+								  <option value="24">24</option>
+								  <option value="25">25</option>
+								  <option value="26">26</option>
+								  <option value="27">27</option>
+								  <option value="28">28</option>
+								  <option value="29">29</option>
+								  <option value="30">30</option>
+								  <option value="31">31</option>
+                            </select>
+						</li>
+						<li> 
+							<select name="month" id="month">
+							  <option value="">Month</option>							  
+							  <option value="01">January</option>
+							  <option value="02">February</option>
+							  <option value="03">March</option>
+							  <option value="04">April</option>
+							  <option value="05">May</option>
+							  <option value="06">June</option>
+							  <option value="07">July</option>
+							  <option value="08">August</option>
+							  <option value="09">September</option>
+							  <option value="10">October</option>
+							  <option value="11">November</option>
+							  <option value="12">December</option>
+							</select>
+						</li>
+                        <li> 
+							<select name="year" id="year">
+							  <option value="">Year</option>							 
+							  <option value="2012">2012</option>
+							  <option value="2011">2011</option>
+							  <option value="2010">2010</option>
+							  <option value="2009">2009</option>
+							  <option value="2008">2008</option>
+							  <option value="2007">2007</option>
+							  <option value="2006">2006</option>
+							  <option value="2005">2005</option>
+							  <option value="2004">2004</option>
+							  <option value="2003">2003</option>
+							  <option value="2002">2002</option>
+							  <option value="2001">2001</option>
+							  <option value="2000">2000</option>
+							  <option value="1999">1999</option>
+							  <option value="1998">1998</option>
+							  <option value="1997">1997</option>
+							  <option value="1996">1996</option>
+							  <option value="1995">1995</option>
+							  <option value="1994">1994</option>
+							  <option value="1993">1993</option>
+							  <option value="1992">1992</option>
+							  <option value="1991">1991</option>
+							  <option value="1990">1990</option>
+							  <option value="1989">1989</option>
+							  <option value="1988">1988</option>
+							  <option value="1987">1987</option>
+							  <option value="1986">1986</option>
+							  <option value="1985">1985</option>
+							  <option value="1984">1984</option>
+							  <option value="1983">1983</option>
+							  <option value="1982">1982</option>
+							  <option value="1981">1981</option>
+							  <option value="1980">1980</option>
+							  <option value="1979">1979</option>
+							  <option value="1978">1978</option>
+							  <option value="1977">1977</option>
+							  <option value="1976">1976</option>
+							  <option value="1975">1975</option>
+							  <option value="1974">1974</option>
+							  <option value="1973">1973</option>
+							  <option value="1972">1972</option>
+							  <option value="1971">1971</option>
+							  <option value="1970">1970</option>
+							  <option value="1969">1969</option>
+							  <option value="1968">1968</option>
+							  <option value="1967">1967</option>
+							  <option value="1966">1966</option>
+							  <option value="1965">1965</option>
+							  <option value="1964">1964</option>
+							  <option value="1963">1963</option>
+							  <option value="1962">1962</option>
+							  <option value="1961">1961</option>
+							  <option value="1960">1960</option>
+							  <option value="1959">1959</option>
+							  <option value="1958">1958</option>
+							  <option value="1957">1957</option>
+							  <option value="1956">1956</option>
+							  <option value="1955">1955</option>
+							  <option value="1954">1954</option>
+							  <option value="1953">1953</option>
+							  <option value="1952">1952</option>
+							  <option value="1951">1951</option>
+							  <option value="1950">1950</option>
+							  <option value="1949">1949</option>
+							  <option value="1948">1948</option>
+							  <option value="1947">1947</option>
+							  <option value="1946">1946</option>
+							  <option value="1945">1945</option>
+							  <option value="1944">1944</option>
+							  <option value="1943">1943</option>
+							  <option value="1942">1942</option>
+							  <option value="1941">1941</option>
+							  <option value="1940">1940</option>
+							  <option value="1939">1939</option>
+							  <option value="1938">1938</option>
+							  <option value="1937">1937</option>
+							  <option value="1936">1936</option>
+							  <option value="1935">1935</option>
+							  <option value="1934">1934</option>
+							  <option value="1933">1933</option>
+							  <option value="1932">1932</option>
+							  <option value="1931">1931</option>
+							  <option value="1930">1930</option>
+							  <option value="1929">1929</option>
+							  <option value="1928">1928</option>
+							  <option value="1927">1927</option>
+							  <option value="1926">1926</option>
+							  <option value="1925">1925</option>
+							  <option value="1924">1924</option>
+							  <option value="1923">1923</option>
+							  <option value="1922">1922</option>
+							  <option value="1921">1921</option>
+							  <option value="1920">1920</option>
+							  <option value="1919">1919</option>
+							  <option value="1918">1918</option>
+							  <option value="1917">1917</option>
+							  <option value="1916">1916</option>
+							  <option value="1915">1915</option>
+							  <option value="1914">1914</option>
+							  <option value="1913">1913</option>
+							  <option value="1912">1912</option>
+							  <option value="1911">1911</option>
+							  <option value="1910">1910</option>
+							  <option value="1909">1909</option>
+							  <option value="1908">1908</option>
+							  <option value="1907">1907</option>
+							  <option value="1906">1906</option>
+							  <option value="1905">1905</option>
+							  <option value="1904">1904</option>
+							  <option value="1903">1903</option>
+							  <option value="1901">1901</option>
+							  <option value="1900">1900</option>
+							</select>
+						</li>                        
+                        <li style="text-align:center;">
+							<a href="#" class="greenButton" onclick="shownumber();">SHOW ME MY NUMBER</a>
+						</li>
+                    </ul>
+                </form>
+                   
+                </div>
+                <div class="info">
+                    <p>vnnvh80@gmail.com</p>
+                </div>
+            </div>
+            <div id="rs">
+                <div class="toolbar">
+                    <h2 style="text-align:center;color:yellow;">Your Numerology</h2>
+                    <a href="#" class="back">Back</a>
+                </div>
+                <div  id=lp1 style="display:none;">
+                    <h2>Your Life Path Number 1</h2>
+                    <p class=contentDetail>
+						A person with Life Path number 1 is hard working, a natural born leader, has a pioneering spirit that is full of energy, and a passion for art. They have a strong desire to be number one, which means a person with this number can manifest very easily. Due to their determination and self motivation, they won't let anything stand in their way of accomplishing a goal. Their drive allows them to overcome any obstacle or challenge they may encounter, and they have the desire to accomplish great things in their lifetime. Their only need is to focus on what they want in order to achieve it.
+
+						Because Ones are critical of themselves, they can also be very critical of others. The Ones will not tolerate laziness from the people they spend their time with.
+
+						People with Life Path 1 are very independent and feel the need to make up their own mind about things and follow their own personal convictions. All this drive and determination means that they can easily become irritated when things don't go their way.
+
+						Innovation and creativity also are characteristics associated with this path. These folks are very good at starting new projects, and often take a unique or inventive approach to solving problems. Because of these qualities, and because multitasking is something they tend to be very good at, they are well suited to self employment and can be happiest being their own boss. A Life Path of One also means that they may possess the qualities to be a political or military leader.
+
+						On the negative side, if you are of Life Path 1 you can have a tendency to be self centered, egotistical and demanding. Because you feel a strong desire to be number one and to appear successful, you can easily become arrogant or boastful. Though you excel as a leader, you may have a difficult time being a follower, and are reluctant to seek help, which can cause you to be quite unhappy if you are in a situation where you are not in charge. While you are great at starting projects, you quickly tire of detailed tasks.
+
+						Your life path tells you what your life tools and lessons are about. Life path number 1 is a strong vibration, one of individuality and invention, and below are some key points you might want to take into consideration to help you on your path …
+
+						Be true to your path. You are quick on the draw and you usually see the opportunity in an idea faster than most people. Use that and you'll be happier.
+
+						Aim for a career that lets you be your own boss. You're better working alone than with a group and you don't take orders well.
+
+						Avoid getting lazy just because you're frequently quicker than other people. Use that energy to explore and achieve further on your own.
+
+						Take charge, step out and risk it all on a new venture. Nobody will do that better than you.
+					</p>
+                </div>
+				<div  id=lp2 style="display:none;">
+                    <h2>Your Life Path Number 2</h2>
+                    <p class=contentDetail>
+						A person with Life Path number 2 seeks harmony and peace, and is symbolized by relationships, co-operation, and being considerate and thoughtful of others. People with a Life Path 2 are natural peacemakers, and because they see all the viewpoints in any situation, handle difficult situations with grace, and tend to be persuasive rather than forceful when trying to get their point across, people may often look to them to be a mediator in any argument. 
+
+						They are very loyal, and when they say that they love you, count on it! They welcome companionship and the chance to share their lives with someone special. They are extremely sensitive to others and have the ability to truly listen. Twos are sincere, honest and open and see the best in people. Because of their sensitivity, gentleness and loving spirit, they make an excellent friend or lover.
+
+						If your Life Path number is 2, your sensitivity can also in some ways be your downfall. Many people with a Life Path of 2 are oversensitive, shy, and afraid to speak their minds. Because you are afraid of being hurt you may avoid confrontation and hold back your opinions. This can cause you to have trouble contributing to a group, and may make you feel resentful because you are withholding your ideas and contributions. You compassion and caring for other people also may cause you to deny your own needs in favor of the needs of others, which can also lead to feelings of resentment or anger, and if you feel threatened or pushed to the wall, you can become the terrible Twos, however, ultimately you do not want conflict.
+
+						Life path number 2 is a vibration of duality and division, the number of truth and learning, below are some key points you might want to take into consideration to help you on your path … 
+
+						Don't try to deny who you are. You sometimes have problems with black and white issues; you'd like to simplify thing that way, but you know better. 
+
+						Aim for a career that uses your strengths. You'll be an excellent diplomat or counselor. You enjoy creative endeavors, whether they're musical, artistic or even gardening and farming. If you feel drawn to politics, your constituents will have a strong, truthful representative. 
+
+						You may be shy and somewhat indecisive. Learn to respect your own opinions and values; as you do, so will those around you. Don't allow your gentle sympathy to make you dependent and fearful. 
+
+						You can create any changes you want in your life. Remember to be thoughtful and tactful in your honesty. Study and collect knowledge and others will be grateful for your depth. 
+					</p>
+                </div>
+				<div  id=lp3 style="display:none;">
+                    <h2>Your Life Path Number 3</h2>
+                    <p class=contentDetail>
+						People with a Life Path number 3 have a very high level of creativity and self expression. This abundance of creative energy, and the ease with which they are able to communicate in all areas, both written word and verbal, could lead them to become a poet, actor, writer, artist or musician. In fact many writers, radio broadcasters, actors, singers, performers, and counselors share this life path number. 
+
+						Threes are optimistic, extremely generous and giving souls, and are able to find positive in everything around them. People like to be around them, not only because of these qualities, but also because Threes have a charismatic personality, are great listeners and are very conscious of other people's feelings and emotions. They can easily put the people around them at ease and make them feel comfortable. 
+
+						Because they enjoy living life to the fullest, Threes tend to live life for today and not worry about tomorrow. They have a hard time taking responsibilities seriously, and probably aren't very good with money, partly because they feel so positive about life they figure everything will work itself out fine. This can sometimes lead those with a Life Path of 3 to live superficially, have a lack of direction in their life, and procrastinate. 
+
+						When they are hurt emotionally, Threes tend to withdraw and become moody, and can sometimes make biting comments to lash out at people around them. They can be manic depressive if they do not use their creative energy and tend to exaggerate the truth. 
+
+						Life path number 3 is a strong vibration, one of creative self expression, independence, playfulness, and communication. Below are some key points you might want to take into consideration to help you on your path … 
+
+						You have to be who you are. You are a joyful spirit, and probably talented, witty and charming. Don't settle for the superficial, but use those qualities as ways to dive deeper into your own soul. 
+
+						Aim for a career that lets you express yourself. You could head for entertaining, but you would also be a great designer, jeweler, writer, or hairdresser. You're good at seeing the overall structure of whatever you're working on. 
+
+						Remain open-minded. Do the essential things first, then look for the frosting. Don't be afraid to be ambitious 
+					</p>
+                </div>
+				<div  id=lp4 style="display:none;">
+                    <h2>Your Life Path Number 4</h2>
+                    <p class=contentDetail>
+						People with a Life Path number 4 are the worker bees of society. If your Life Path is a 4 you are determined, practical and hard working. Down-to-earth is a term that is probably often used to describe you. You find hard work rewarding and don't look for the easy way to the top or to finding success. Not only do you work hard yourself, but you expect the same from those around you. 
+
+						The Fours like to be organized, and to put things back in their " proper place" … it is one of their strong points, and they feel better able to tackle challenges if they have a solid plan in place beforehand. They tend to be set in their ways and are drawn to leading an orderly life ie. "a place for everything and everything in its place." Home is their haven, and if their home environment appears sloppy and unkempt, that is a sign that a Life Path 4 person is not doing well. 
+
+						They are usually very cerebral and need to find ways to relax their minds. Otherwise, great ideas live and die in their heads. They have a strong sense of right and wrong, are very honest, and value honesty in others. Fours' dreams are based in reality and they never question that you will have to work hard to make them come true. Loyal and very dependable, they make an excellent friend or partner, but may have just a small circle of friends. 
+
+						On the negative side, Fours can be so set in their ways that they can often come across as stubborn, rigid or too serious. They also have a tendency to overlook tact and let their true feelings be known to all those around them, which can sometimes turn other people away from them. Although practical and good planners, Fours are extremely cautious, and don't deviate much from their master plan, and because of this can sometimes miss opportunities that arise because they don't act on them quickly enough. 
+
+						Life path number 4 is about putting all the pieces together, it is a builder number. You are grounded, serious, hardworking, analytical, practical and disciplined. Below are some key points you might want to take into consideration to help you on your path … 
+
+						You are the practical, content one in the crowd. You are probably drawn to building or construction, although you would also be a good lawyer, mechanic, engineer or accountant. Whatever path you choose, don't hesitate to teach those around you. 
+
+						Don't let yourself get bored or boring. You have a tendency towards complacency when you think everything is under control. Don't let it blind you to new opportunities and projects. 
+
+						You'll lean towards depression and fatigue if you don't get enough fun and relaxation. Relaxing isn't one of your talents, so do something active to recharge. Go to Disneyland and see how many rides you can do in one day. Backpacking might be just the thing for you. 
+
+						You would probably enjoy volunteering in some way. Look for something that lets you pass on your skills to others. 
+ 
+					</p>
+                </div>
+				<div  id=lp5 style="display:none;">
+                    <h2>Your Life Path Number 5</h2>
+                    <p class=contentDetail>
+						Those with a Life Path of 5 seek freedom above all else. They are adventurers, having a restless nature, and being on the go, constantly seeking change and variety in life. They have a free spirit and need to have variety in their day. If they do not live the adventure, their lives become way too dramatic. 
+
+						They love meeting new people, trying new things, and living life for today, and curiosity leads them to constantly try to find the answers to life's questions. "Conservative" is a word that is probably never used to describe them, as they love taking risks, and hate routine and repetition. 
+
+						Fives have a hard time settling down and have a fear of being trapped or smothered in a relationship. Their love of freedom extends beyond concern only for their own freedom, and they have a genuine concern for the freedom and welfare of others. Although Fives are extremely compassionate, their focus on adventure and curiosity can also distract them and keep them from being aware of the feelings of those around them. Furthermore, because they are always seeking the next adventure, their life can lack direction, and this can cause them to become discontent and impatient. 
+
+						Fives are very persuasive and excel at motivating people which makes them ideal candidates to become salesmen. Any career requiring travel is also a great fit for those with Life Path number 5, since it will keep them away from the routine of many other jobs, otherwise they may feel a sense of restlessness if they get stuck in a mundane or repetitive job environment. Fives are also very versatile, which makes many other career choices suitable for them. A person with a lot of 5's in their chart will want to be their own boss. This person will not enjoy working a 9 to 5 job where they have to report to someone else each day. 
+
+						Life path number 5 is the number of freedom and change. Below are some key points you might want to take into consideration to help you on your path … 
+
+						Don't try to deny who you are. Security is a great thing, but you need your escapes. Find a way to satisfy that wandering urge or you'll be miserable. 
+
+						Aim for a career that lets you have adventures. You are capable of great originality in both thought and action. You could do something as dramatic as being a photographer for National Geographic or as simple as being a flight attendant. 
+
+						You can be self-indulgent, especially if you let yourself get bored. Allow yourself to enjoy your spirit of adventure and you'll be able to find excitement in a walk around the block. If you can't travel, at least try new restaurants. 
+
+						You are sensual, but don't bask in it. Don't forget to learn about yourself and other people while you explore.  
+					</p>
+                </div>
+				<div  id=lp6 style="display:none;">
+                    <h2>Your Life Path Number 6</h2>
+                    <p class=contentDetail>
+						Those born with a Life Path number 6 are incredible nurturers. If men, they rescue damsels in distress. If women, they mother the "little boy" in their men. 
+
+						If you have a six in your chart you are home, family, or community oriented, loving, warm, understanding, compassionate, responsible and reliable and interested in pleasing others. You are an excellent caretaker and provider, and enjoy being of service to others, and this is especially true with your family and friends. You life revolves around home and family, and your parenting instincts are very strong. The word domestic most likely describes you well, and one job you would love is being a stay at home parent. 
+
+						As a Six you should keep an eye on yourself as you may become self-righteous and critical of others. Because you are so giving you might have a tendency to become a slave to others and neglect your own needs in the process. Because you thrive on supporting others you may sometimes find it difficult to find a balance between helping and meddling. You may also become an enabler for someone who needs taking care of in a relationship, or with a child, and not allow them to experience life or learn its lessons. People born on the Sixth path are often described as magnetic, as people are often drawn to them, and their moods can affect the room. 
+
+						Your tendency is to be a humanitarian and you feel a genuine devotion to the welfare of your fellow human beings, but you must be careful of putting people on pedestals, as they often have a tendency to topple. 
+
+						Life path number 6 is the number of responsibility and awareness. When those around you are losing their heads, you're the one who takes charge. Stop fighting it. Below are some key points you might want to take into consideration to help you on your path … 
+
+						Don't try to deny who you are. You are a take charge person. You have two choices. You can accept it and get over it and do it right and actually enjoy it. Or, you can give up control and know that you'll be critical of the way anyone else handles things. You're probably a control freak. That's OK, there are a lot of us out there. Just have a sense of humor about it. Remember, you're a legend in your own mind! Now, keep reading. 
+
+						Appreciate yourself. Aim for a career that rewards your responsibility. You'll do much better as a manager than as a worker. If it means more education, then get it. Be proud of yourself for being capable. 
+
+						Remember that the person in charge is only as good as the people doing the grunt work. Be compassionate, practical and appreciative. And make sure that you know how to do each person's job, so that you know what you're asking them to do. 
+
+						You might want to make your vacations as control-free as possible. Someplace like Club Med or a cruise might be perfect for you. Give yourself a few days where the only decisions you have to make are if you're hungry or thirsty and what you want to do about it. Let the people in charge take care of you for a change. Just make sure you know they're going to do it properly. 
+
+						Another vacation option is to do something very physical. Go someplace and help build a cabin, or a house. Do a seven-day backpacking or bicycle trip. The idea is to do something physically fairly strenuous for a week or so. Or huge, like train for and run a marathon. Make yourself tired. Just make sure you spend a couple of days recovering. 
+					</p>
+                </div>
+				<div  id=lp7 style="display:none;">
+                    <h2>Your Life Path Number 7</h2>
+                    <p class=contentDetail>
+						Seven is another cerebral number, and those with a Life Path number 7 have a loner quality. They need to learn to have faith. If they do not have faith they tend to become very cynical and escape through drugs, alcohol, work, and geography. They have a love of natural beauty: ocean, green grass, plants, flowers, etc. . . 
+
+						Sevens have an air of mystery and do not want you to know who they are. Intellectual, analytical, intuitive, reserved, natural inclination towards spiritual subjects, aloof, loner, pessimistic, secretive, and insecure; are some of the qualities of those born into the Seventh Life path. A person who is a Life Path 7 is a thinker. If your Life Path is a 7 you are wise and studious. You seek truth and wisdom in all that you do, and search for the underlying answers in everything. Your tendency is to be a perfectionist, and you expect the same from those around you. 
+
+						Because you are most comfortable by yourself, a loner or introvert, you happily give up the stress and turmoil of a busy life in favor of a quiet, peaceful life of solitude. 7 is a spiritual number, and most 7's are drawn to spiritual pursuits. 
+
+						Your love of solitude can make it difficult for you to form close relationships. While you value your independence you may often feel lonely or isolated because you lack closeness with others. Because you spend so much time alone, you may lose your consideration for others and become inflexible. One of the challenges for you is to find a balance between maintaining your solitude while not becoming completely isolated. Seven represents spiritual focus, analysis, being original, independent; If you have this number people often feel like they don't know you; you are a mystery, and some may see you as eccentric. 
+
+						Life path number 7 is the number of a higher awareness, a wider point of view. When all around you are admiring the trees, you're absorbed in the forest. Your lesson is to train yourself to see both. Below are some key points you might want to take into consideration to help you on your path … 
+
+						You may be afraid of heights, but your heart soars like an eagle. You probably will always see more widely than most around you. Oddly enough, this can also lead to a seeming lack of attention to detail. Don't ignore the details. 
+
+						Another way to describe your view of life is that you're frequently in touch with "the force." The energy of the world can seem like a pond with a mostly smooth surface. Watch the surface for ripples; many of them are caused by opportunities coming within reach. 
+
+						You have a stable core, but the exterior can keep your friends and family guessing. You'll more than likely have several careers during your lifetime, or you'll find a way to keep it different and refreshing while you're doing it. If you owned a restaurant, the menu would probably change monthly, even daily. 
+
+						Make your vacations into mini-adventures or learning expeditions. Take a workshop on something you've always wanted to learn and immerse yourself in it. Or, visit a place you've always been curious about and do the same. 
+
+						There's a good chance you'd love learning to fly 
+					</p>
+                </div>
+				<div  id=lp8 style="display:none;">
+                    <h2>Your Life Path Number 8</h2>
+                    <p class=contentDetail>
+						People with a Life Path number 8 do not feel safe unless they have found a way to establish financial security. 
+
+						It is difficult for an Eight to take advice. When they make a choice, they must feel it is their decision, NOT SOMEONE ELSES. As a result, they do tend to learn the hard way. Eights are very honest and by being so blunt, they unintentionally hurt feelings. Although they can sometimes appear insensitive, what is going on inside them is the exact opposite. They do feel deeply about everything that goes on in their lives. People with a Life Path 8 are born with natural leadership skills. If your Life Path is an 8 you are very ambitious and goal oriented. You have strong organizational skills and broad vision which make you successful in business. 
+
+						Eight represents authority, material wealth, ambition, and caution. A person with the number 8 in their chart will work diligently to achieve their goals. This person would make a good business manager and leader. They thrive on hard work, and more than any other Life Path number are prone to becoming a workaholic. They are very good with money and their work ethic makes it possible for them to acquire wealth. This pursuit of materialistic gains can hold some pitfalls for them, including a tendency to become unscrupulous in their efforts to make money, or neglect of their family and loved ones while working to earn money. 
+
+						If you are an Eight, you are a good judge of character and attract the right kind of people to work with you toward your vision. This makes you a natural executive and excellent in the business or political arena. You have a need for success, and a strong desire to be recognized for your achievements. 
+
+						Because you consider status very important you may be tempted to live above your means. You should also pay special attention to telling and showing your loved ones that you care - being a good provider isn't the only way of doing this. 
+
+						Life Path number 8 is also a number of returning karma and opportunity. You are reviewing the lessons you've brought from other lifetimes, and reinforcing what you choose to keep. Below are some key points you might want to take into consideration to help you on your path … 
+
+						The eight life path is the time to learn what really matters. Things of dishonesty in the past may present themselves again in this lifetime. Even important choices that you made well may revisit you. 
+
+						Eight has a built-in sense of the relationship between the past, present and future. It's almost impossible for you to look at a situation and not also see what probably led to it and what will happen next. You can probably see the best way to improve the situation, too. 
+
+						You'll probably have a recurring pattern of people entering, leaving and returning to you. Things and people just have a way of returning to you eventually. 
+
+						You could be a wonderful counselor, helping other people to see the patterns and recurring events of their lives. You also probably have the compassion to do it, just remember that sometimes your direct honesty can be hard to take. 
+
+						Know that another possible interest or career could be anything involving history and antiques. You could be the guy with great stories down at the local antique store, or some body's high school history teacher 
+					</p>
+                </div>
+				<div  id=lp9 style="display:none;">
+                    <h2>Your Life Path Number 9</h2>
+                    <p class=contentDetail>
+						Those born with a Life Path number 9 are natural leaders, and they assume they are in charge even if they are not. If in a department store, people think they work there. They take care of everyone else but need to learn to speak up when they need help, love, and hugs. Nines often feel unloved or abandoned by their mother or father, or they feel completely responsible for them. It's hard for them to let go of the past. 
+
+						People with a Life Path 9 are humanitarians. If your Life Path is a 9 you have an extremely strong sense of compassion and generosity. You are selfless and helping others is very important to you. You not only want to help others, but you feel very deeply for those less fortunate than yourself. 
+
+						You are friendly and people like you. Your generosity knows no bounds, and you give freely of your money, time and energy. Your ultimate goal is working toward a better world. 
+
+						Because you are so giving you may find that your finances are not in the greatest shape. You may also have a tendency to be scattered … your talents lie in so many different directions that you may find it difficult to focus on just one. If you are not following your Life Path and are instead pursuing materialistic gains, you could feel a deep level of dissatisfaction with yourself. 
+
+						Number 9 symbolizes endings, spiritual consciousness. An individual with a Life Path number 9 can overcome a lot, and is often required to do so in their lifetime. If you have a Life Path Number 9 you most likely had a difficult relationship with one or both of your parents early in your life. 
+
+						Life path number 9 is the number of completion and resolution. You will need to make choices, and not resist endings. Below are some key points you might want to take into consideration to help you on your path … 
+
+						Your biggest battle in life is with endings and completion. You hate to see things finish, but you also are tempted to just end things so that it's on your terms. Just take it as it comes. 
+
+						Learn that every ending contains a beginning. You might do best with a career that lets you start and finish multiple projects. You'll get better at seeing the continuum of the process rather than the beginnings and endings. 
+
+						You may have a tendency to end relationships every time you encounter a rough patch. Teach yourself to see those situations as temporary. It's worth sticking to a commitment for many reasons, including just because you said you would. Don't always take the easy way out. 
+
+						Gardening may be a healing thing for you. Not house plants, but food, things that have a season. You'll enjoy seeing the progress throughout the year and knowing that it is a constantly revolving wheel. 
+					</p>
+                </div>
+				<div  id=lp11 style="display:none;">
+                    <h2>Your Life Path Number 11</h2>
+                    <p class=contentDetail>
+						Individuals with the Life Path number 11 are very intuitive, in fact it is the most intuitive of all numbers. They are sensitive and have a great understanding of others, and can sense a great deal about what is going on behind the scenes. For example, they will pick up on people's relationships and health without being told anything. They are here to use their gifts of intuition, and sensitivity to help others. 
+
+						Life path of 11 has the qualities of the number two magnified. If you have this number you are spiritually aware, a visionary, inspiring, charismatic, inventive, a dreamer, idealistic, and a deep thinker, and you rely on faith rather than logic to deal with the life and all it has to offer. 
+
+						The challenge for Elevens is to not be overwhelmed by their gifts. Fears and phobias would be the downside of this number. They may also seem at times indecisive, impractical, nervous, and moody. 
+
+						The number 11 life path is concerned with spiritual illumination. Often a number 11 will have an instinctive understanding of metaphysical matters. Because Elevens are also Twos, , they have the strength to finish what they start. 11 is also a good number for forming partnerships … you work and play well with others. You are likely to marry young and be committed and faithful for your entire life. 
+
+						Below are some key points you might want to take into consideration to help you on your path … 
+
+						An 11 may appear to lead a life of extremes. It is really a search for balance in all areas of life. 11s are avant-garde and visionary individuals who make great students, psychics, mystics, healers, teachers, writers, musicians and artists. 
+
+						You probably like habit and routine, it gives you a foundation from which you can explore. You might not be a leader, but you are a visionary and a very talented idea person. Your ability to quickly and accurately analyze a situation is a real strength in the business world. You are a perfectionist, but you usually measure up. 
+
+						An unhappy 11 will find themselves always dreaming of big schemes, but never taking practical action to pursue those goals. This means the 11 is stuck in the "visionary" stage of enlightenment, and probably needs to address fear issues. 
+
+						An 11/2 can be your own worst enemy. You're driven to perfection, but sometimes that just means you're on a carousel that won't stop. Learn to call it a day and don't get caught in self-blame. 
+					</p>
+                </div>
+				<div  id=lp22 style="display:none;">
+                    <h2>Your Life Path Number 22</h2>
+                    <p class=contentDetail>
+						22 is considered the most powerful of all the numbers. Those with a Life Path number 22 have great spiritual understanding, and ability to apply knowledge in a practical way and achieve enormous success. 
+
+						This is the number of the Master Builder and those with a 22 in their chart are able to turn your dreams into a reality. You are a great visionary and have the intuitive insights of the 11, combined with the practical nature of the 4, . If not practical, someone with this number can waste their potential. This individuals' goals are outside of their personal self as this person strives to serve the greater good of humanity. 
+
+						The downside of those with a Life Path number 22 would stem from the Challenges for someone with this number in being overwhelmed by their own potential, and fear of failure, and although they can be determined, they may at times seem dictatorial, insensitive, and overbearing. 
+
+						It can take someone with this number well into their adulthood before they manifest their dreams because they have to go through trials, and learning experiences before they mature enough to incorporate their true calling in their life. 
+
+						Those following Life Path of 22 are called master teachers, and as mentioned they are the most powerful of the life path numbers, endowed with many powers, and a unique talent for manifesting ideas into the realm of reality. Below are some key points you might want to take into consideration to help you on your path … 
+
+						Your thoughts have incredible power, so be careful what you focus on, because it will more than likely appear in your life, whether you like it or not. You are a classic case of "be careful what you wish for." 
+
+						Don't let yourself become obsessed with the ease of acquiring "stuff." Part of your lesson is to put your effort into the things that matter. You may also have to learn how to let go of the things that don't matter. 
+
+						Keep yourself organized. You will make yourself crazy if you don't. Have a place for everything. That goes for your bookkeeping, as well. 
+
+						It's not easy to go through life thinking of yourself as a teacher. You are one, whether you like it or not. You will influence people just by being around them. You are not teaching behavior or something concrete. Teach peace of mind and contentment in the present. Teach by example... 
+					</p>
+                </div>
+				<div  id=lp33 style="display:none;">
+                    <h2>Your Life Path Number 33</h2>
+                    <p class=contentDetail>
+						A birth date that reduces down to 33 is very rare. When it does happen you may be looking at a great and significant spiritual leader along the lines of the Dalai Lama (Life Path 22) or Gandhi (Life Path 9). Remember that a 33 is also a 6 life path, a very nurturing and responsible number. 
+
+						33 is the Master Teacher. This individual's focus is on reaching the world and uplifting the loving energy of mankind. They are not concerned with personal ambition, and have great devotion to cause. 
+
+						Life Path number 33 is signified by the word altruistic. This number has a high energy and is concerned with doing good in the world. 
+
+						Those with Life Path number 33 want to use their life to raise the consciousness of as many people as possible. Their concern is the earth and all the people who live here. It's really a beautiful life path number. As you may have guessed few have it. Below are some key points you might want to take into consideration to help you on your path … 
+
+						The 33/6 life path will call you to leadership and responsibility. This may not always please you, but you'll have to make your peace with it. 
+
+						The 33 individuals usually achieve fame through acts of kindness, tenderness and compassion that lead to the transformation of the world's consciousness. The details may vary. We could be talking about the Pope, we could be talking about a wonderful first-grade teacher. 
+
+						If you are like the majority with life path 6, you will always be the best person to take charge of things. Your other choice is to sit back and criticize, so make your peace and just do it. 
+
+						You have a good chance of being a great cook. You have the vision to dream it, and the organizational skills to do it right. It's a great way to relax. Besides, you love to eat! 
+
+						You are always coming up with ideas that other people think are a bit "out there." Follow your instincts, and others will follow you. We'll end up with a kinder, gentler world. 
+					</p>
+                </div>
+				<div  id=dn1 style="display:none;">
+                    <h2>Your Destiny Number 1</h2>
+                    <p class=contentDetail>
+						On a more negative side the number 1 can represent a bit of a bullish and overbearing character trait, and headstrong and stubborn personality. Opinionated, self-centered, domineering, overly critical, aggressive and intimidating are other, less positive traits associated with this number.
+
+						On a more positive side, the number 1 brings in a more competitive, driven, and highly motivated energy. This energy is more directed and controlled ... it is the ambitious and pioneering force. The 1 also represents responsibility and loyalty, intelligence and wit, insightfulness, courage, innovation, confidence, independence, and unconventional individualism. Those with 1s in their chart are more likely to try new avenues, take risks, and venture out into unknown territories.
+					</p>
+                </div>
+				<div  id=dn2 style="display:none;">
+                    <h2>Your Destiny Number 2</h2>
+                    <p class=contentDetail>
+						On a more negative side the number 2 can be indecisive, and overly sensitive, making those with many 2s in their numerological chart more vulnerable to verbal abuse and negative criticism. 
+
+						On a more positive side, the number 2 brings in a more sensitive, and intuitive energy. The 2 is a vibration of a peacemaker ... tactful, insightful and supportive, more understanding, flexible and willing to compromise. The 2 represents idealism, open mindedness, modesty, and gentleness. It is a warm, friendly, and unpretentious vibration, that often exudes sex appeal. Those with 2s in their charts have a greater respect for the world of emotions, feelings, and intuitions, and likely have an uncanny ability to recognize the more subtle things in life, and the often hidden motives of others.
+					</p>
+                </div>
+				<div  id=dn3 style="display:none;">
+                    <h2>Your Destiny Number 3</h2>
+                    <p class=contentDetail>
+						On a more negative side, the energy of the number 3 tends to be somewhat scattered, unfocused, and impulsive. The 3 can be undisciplined, escapist, irresponsible, cynical, and sarcastic, and those with 3s in their chart tend to be less grounded, more restless, and get bored more easily. 
+
+						On a more positive side, the number 3 brings in an upbeat, expressive, creative, playful, inspiring, and uplifting energy. The 3 is a vibration of an optimist ... fun loving, and perhaps even childlike in nature. Those with 3s in their chart tend to be less conventional, more easy going, with a great sense of humor, an upbeat nature, and a go with the flow attitude.
+					</p>
+                </div>
+				<div id=dn4 style="display:none;">
+                    <h2>Your Destiny Number 4</h2>
+                    <p class=contentDetail>
+						The number 4 stands for everything that is sturdy, reliable, honest, patient, responsible, conventional, detail-oriented, logical and organized. It is a grounded vibration, one that induces practicality, discipline and focus. Those with 4s in their charts tend to prefer routine and predictability, and are likely more dependable and practical in nature. 
+
+						On a more negative side, the number 4 can be rigid and stubborn, frugal and dull, lacking tolerance and open-minded acceptance, too serious, and in more extreme cases overly controlling.
+					</p>
+                </div>
+				<div  id=dn5 style="display:none;">
+                    <h2>Your Destiny Number 5</h2>
+                    <p class=contentDetail>
+						The energy of the 5 is more dynamic and volatile, impulsive, responsive to the moment, and less controlled; however, it is not aggressive. It is a vibration of action and change. Some of the more positive traits that are representative of those with 5s in their numerological chart are; stimulating, witty, charismatic, optimistic, inspiring, daring, adventurous, energetic, sensual, tolerant, flexible, adaptable, curious, enthusiastic, easy going, and a free spirit. 
+
+						On the negative side the 5 is irresponsible, gets bored easily, can be overly excitable and emotionally superficial. Those with 5s in their chart have a tendency for indulgence, often expressed in sexual promiscuity, overeating, or drug and alcohol abuse.
+					</p>
+                </div>
+				<div   id=dn6 style="display:none;">
+                    <h2>Your Destiny Number 6</h2>
+                    <p class=contentDetail>
+						The 6 is, by nature, perhaps the most harmonious of all numbers, and its vibration is one of compassion, understanding, warmth, harmony, romance, sacrifice, and love. Those with a 6 in their numerological chart, are likely to lean towards lifestyles that include teaching, healing, counseling, or any other field that deals with service to others. 
+
+						Some of the more negative attributes of the number 6 relate directly to the positives. The urge to care for and protect close friends and family members, can be seen as overprotective if taken to the extreme, and terms such as interfering, smothering, and meddlesome can be used to describe an unbalanced 6.
+					</p>
+                </div>
+				<div id=dn7 style="display:none;">
+                    <h2>Your Destiny Number 7</h2>
+                    <p class=contentDetail>
+						The number 7 has a somewhat secretive, withdrawn, and distant energy. The vibration of this number represents all that is different, mysterious, serious, independent, intelligent, wise, and spiritual. Those with a 7 in their charts, tend to be more curious, challenging everything others take for granted in their search for knowledge and spiritual understanding. Some of the more positive traits that are representative of those with 7s in their numerological charts are; Analytical, philosophical, logical, private, perfectionist, contemplative, and a bit of a dreamer.
+
+						On the negative side, the 7 can be seen as skeptical, cynical, arrogant, small minded, and even neurotic.
+					</p>
+                </div>
+				<div  id=dn8 style="display:none;">
+                    <h2>Your Destiny Number 8</h2>
+                    <p class=contentDetail>
+						On the more positive side, the number 8 vibration represents ambition, focus, and drive. The number 8 is a powerful and focused energy, and those with this number in their numerological chart tend to be in the leader role, efficient, confident, goal oriented, practical, and generally have a good business sense, which goes hand in hand with a strong drive for financial success and security.
+
+						On the negative side, the number 8 represents a somewhat authoritarian and demanding nature, which although strong and enthusiastic, can come off as overly confident, egocentric, ruthless, selfish, greedy, and even cruel.
+					</p>
+                </div>
+				<div id=dn9 style="display:none;">
+                    <h2>Your Destiny Number 9</h2>
+                    <p class=contentDetail>
+						The number 9 represents idealism, generosity, and self-sacrifice. It is a vibration of the philanthropist, a humanitarian, a visionary, and one who is more socially conscious. Those with the number 9 in their numerological chart tend to be charismatic, compassionate, and deeply concerned about the state of the world, often sacrificing money, time, and energy for a better world. 
+
+						On the negative side of the number 9, self-righteousness, narrow-minded moral values, and religious fanaticism are not uncommon, nor are arrogance, pride, and a superficial confidence.
+					</p>
+                </div>
+				<div id=dn11 style="display:none;">
+                    <h2>Your Destiny Number 11</h2>
+                    <p class=contentDetail>
+						The number 11 is at its basic level simply a higher vibration of the number 2. What this means is that all the traits and attributes represented by the number 2 also apply to the master number 11, however, these traits, both positive and negative, are now amplified. Please review the content for the number 2. On a higher level, the number 11 is a vibration of insight and illumination. Those with 11 in their charts tend to attract powerful ideas, intuitions, and psychic information, and are extremely sensitive and aware. The downside of this, much like it is the downside of the number 2, is that those with 11s in their numerological chart tend to be much more vulnerable to all conflicts and painful situations.
+					</p>
+                </div>
+				<div id=dn22 style="display:none;">
+                    <h2>Your Destiny Number 22</h2>
+                    <p class=contentDetail>
+						The number 22 is at its basic level simply a higher vibration of the number 4. What this means that all the traits and attributes represented by the number 4 also apply to the master number 22, however, these traits, both positive and negative, are now amplified. Please review the content for the number 4 for more information. On a higher level, the number 22 is a vibration of a Master Builder, and those with this number in their chart tend to be very inspiring, creative and great visionaries. In addition, the number 22 carries the potential of the master number 11, as 22 is 11 doubled. On the negative side, an unbalanced 22 tends to be arrogant and egocentric, and remaining humble may become a challenge.
+					</p>
+                </div>
+				<div id=dn33 style="display:none;">
+                    <h2>Your Destiny Number 33</h2>
+                    <p class=contentDetail>
+						The number 33 is at its basic level simply a higher vibration of the number 6. What this means is that all the traits and attributes represented by the number 6 also apply to the master number 33, however, these traits, both positive and negative, are now amplified. Please review the content for the number 6 for more information. On a higher level, the number 33 is a vibration of a Master Teacher, and those with this number in their chart tend to have a strong, spiritually empowering influence on others.
+					</p>
+                </div>
+            </div>
+            
+            <div id="actionsheet" class="actionsheet">
+                <div class="actionchoices">
+                    <fieldset>
+                        <div>What would you like to do with this link?</div>
+                        <a href="#action_performed" class="whiteButton">Open in Safari</a>
+                        <a href="#action_performed" class="whiteButton">Add to Reading List</a>
+                        <a href="#action_performed" class="whiteButton caution">Delete</a>
+                    </fieldset>
+                    <a href="#" class="redButton dismiss">Cancel</a>
+                </div>
+            </div>
+            <div id="action_performed">
+                <div class="toolbar">
+                    <h1>Action</h1>
+                    <a class="back" href="#">Back</a>
+                </div>
+                <div class="info">
+                    <p>You performed an action.</p>
+                </div>
+            </div>
+            <div id="menusheet" class="menusheet">
+                <ul class="edgetoedge scroll">
+                    <li><a href="#" class="dismiss">jQTouch</a></li>
+                    <li class="sep">Favorites</li>
+                    <li><a href="#edge" class="dissolve">Edge to Edge</a></li>
+                    <li><a href="#plastic" class="dissolve">Plastic</a></li>
+                    <li><a href="#metal" class="dissolve">Metal</a></li>
+                </ul>
+            </div>
+            <form id="ajax_post" action="ajax_post.php" method="POST" class="form">
+                <div class="toolbar">
+                    <h1>Post Demo</h1>
+                    <a class="back" href="#">Ajax</a>
+                </div>
+                <div class="scroll">
+                    <ul class="rounded">
+                        <li><input type="text" name="zip" value="" placeholder="Zip Code" /></li>
+                    </ul>
+                    <h2>Favorite color?</h2>
+                    <ul class="rounded">
+                        <li><input type="radio" name="color" value="green" title="Green" /></li>
+                        <li><input type="radio" name="color" value="blue" title="Blue" /></li>
+                        <li><input type="radio" name="color" value="red" title="Red" /></li>
+                    </ul>
+                    <a style="margin-top: 10px; margin-bottom: 10px; color:rgba(0,0,0,.9)" href="#" class="submit whiteButton">Submit</a>
+                </div>
+            </form>
+        </div>
+    </body>
+    <script>
+      if (window.navigator.standalone) {
+        $("meta[name='apple-mobile-web-app-status-bar-style']").remove();
+      }
+	  function shownumber(){		
+			var num=document.getElementById("day").value+document.getElementById("month").value+document.getElementById("year").value;
+			var lp=LifePathNumber(num);
+			//$("#lp"+lp).show();
+			document.getElementById("lp"+lp).style.display="";
+			window.location.href="index3.html#rs";
+			var n1=DestinyNumber(document.getElementById("fname").value);
+			var n2=DestinyNumber(document.getElementById("mname").value);
+			var n3=DestinyNumber(document.getElementById("lname").value);
+			var dn=LifePathNumber(n1+n2+n3);
+			document.getElementById("dn"+5).style.display="";
+			//alert(dn);
+	  }
+	  function LifePathNumber(number)
+	  {
+	  
+		var mynum=number;		
+		//alert(mynum);
+		var temp=0;
+		var digit=10000;
+		var n=0;
+		if (mynum>=10){
+			while(mynum>0 && digit>0){
+				n=parseInt(mynum/digit);
+				//alert(n);
+				temp+=parseInt(n);
+				mynum=mynum-parseInt(n*digit);
+				digit=digit/10;				
+			}
+			if (temp==11 || temp==22 || temp==33) return temp;
+			if (temp>=10) 
+				return LifePathNumber(temp);
+			else return temp;
+		}
+		else return mynum;		
+	  }
+	  //alert(LifePathNumber(12 + 30 + 1989 ));
+	  //var num=LifePathNumber(13+07+1980);
+	  function getNumberFromChar(ch){
+			if (ch=='' || ch==null || ch==' ') return 0;
+			var alphabet = 'abcdefghijklmnopqrstuvwxyz';//.split('')
+			for(var i=0;i<alphabet.length;i++){
+				if (ch==alphabet.charAt(i)) return i%9+1;
+			}
+			return 0;
+	  }
+	  function DestinyNumber(name){
+	    name=name.toLowerCase();
+		var number=0;
+		for(var i=0;i<name.length;i++){
+				number+=parseInt(getNumberFromChar(name.charAt(i)));
+		}
+		return number;
+	  }
+	  //var n1=DestinyNumber('Oprah ');
+	  //var n2=DestinyNumber('Gail ');
+	  //var n3=DestinyNumber('Winfrey');
+	  //alert(LifePathNumber(n1+n2+n3));
+    </script>
+</html>
